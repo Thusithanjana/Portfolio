@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thusithanjana — Portfolio</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Dynamic portfolio that fetches data from LinkedIn and Google Scholar via custom endpoints." />
+  <style>
+    /* Simple skeleton loader */
+    .skeleton { position: relative; overflow: hidden; background: #e5e7eb; }
+    .skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+      background: linear-gradient(90deg, rgba(229,231,235,0) 0%, rgba(255,255,255,.6) 50%, rgba(229,231,235,0) 100%);
+      animation: shimmer 1.2s infinite; }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-xl md:text-2xl font-bold">Thusithanjana Thilakarathna</h1>
+      <nav class="flex items-center gap-3 text-sm">
+        <a href="#about" class="hover:underline">About</a>
+        <a href="#experience" class="hover:underline">Experience</a>
+        <a href="#projects" class="hover:underline">Projects</a>
+        <a href="#publications" class="hover:underline">Publications</a>
+        <a href="#metrics" class="hover:underline">Scholar Metrics</a>
+        <a href="#contact" class="hover:underline">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-indigo-50 via-white to-sky-50 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-[120px_1fr] gap-6 items-center">
+      <img id="avatar" alt="Profile photo" class="w-24 h-24 rounded-2xl object-cover skeleton" />
+      <div>
+        <h2 class="text-2xl md:text-3xl font-semibold" id="headline" aria-live="polite">Loading headline…</h2>
+        <p class="mt-2 text-slate-600" id="summary">Loading summary…</p>
+        <div class="mt-4 flex flex-wrap gap-2" id="badges"></div>
+        <div class="mt-3 text-xs text-slate-500">Data sources: <span class="font-medium">LinkedIn</span> & <span class="font-medium">Google Scholar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-6xl mx-auto px-4 pb-24">
+    <!-- About -->
+    <section id="about" class="pt-10">
+      <h3 class="text-xl font-semibold">About</h3>
+      <div id="aboutContent" class="mt-3 grid md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <div class="skeleton h-4 w-3/4"></div>
+          <div class="skeleton h-4 w-2/3"></div>
+          <div class="skeleton h-4 w-1/2"></div>
+        </div>
+        <ul id="highlights" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></ul>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="pt-12">
+      <h3 class="text-xl font-semibold">Experience</h3>
+      <div id="experienceList" class="mt-4 grid gap-4"></div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="pt-12">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold">Projects</h3>
+        <label class="text-sm text-slate-500">From LinkedIn</label>
+      </div>
+      <div id="projectList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- Publications -->
+    <section id="publications" class="pt-12">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold">Publications</h3>
+        <label class="text-sm text-slate-500">From Google Scholar</label>
+      </div>
+      <ol id="pubList" class="mt-4 space-y-4 list-decimal list-inside"></ol>
+    </section>
+
+    <!-- Scholar Metrics -->
+    <section id="metrics" class="pt-12">
+      <h3 class="text-xl font-semibold">Scholar Metrics</h3>
+      <div id="metricCards" class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="pt-12">
+      <h3 class="text-xl font-semibold">Contact</h3>
+      <div class="mt-3 grid md:grid-cols-2 gap-6">
+        <div class="p-5 rounded-2xl border border-slate-200 bg-white">
+          <p class="text-slate-600">Reach out via email or connect on LinkedIn.</p>
+          <div class="mt-3 flex flex-wrap gap-2 text-sm" id="contactLinks"></div>
+        </div>
+        <form class="p-5 rounded-2xl border border-slate-200 bg-white space-y-3" onsubmit="event.preventDefault(); alert('Thanks! This demo form does not send.');">
+          <div>
+            <label class="text-sm">Your email</label>
+            <input type="email" class="mt-1 w-full border rounded-lg px-3 py-2" placeholder="you@example.com" required />
+          </div>
+          <div>
+            <label class="text-sm">Message</label>
+            <textarea class="mt-1 w-full border rounded-lg px-3 py-2 min-h-[100px]" placeholder="Hello…"></textarea>
+          </div>
+          <button class="px-4 py-2 rounded-lg bg-slate-900 text-white">Send</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-xs text-slate-500">
+      <p>© <span id="year"></span> Thusithanjana Thilakarathna. Data loaded at runtime from custom LinkedIn and Google Scholar endpoints.</p>
+      <details class="mt-2">
+        <summary class="cursor-pointer">Setup notes</summary>
+        <div class="mt-2 space-y-2">
+          <p>
+            Browsers cannot fetch LinkedIn or Google Scholar pages directly due to authentication and CORS restrictions. To make this page work, provide two same-origin JSON endpoints that your page can fetch:
+            <code class="bg-slate-100 px-1 rounded">/api/linkedin</code> and <code class="bg-slate-100 px-1 rounded">/api/scholar</code>. You can also expose <code class="bg-slate-100 px-1 rounded">/api/linkedin-avatar?profile=</code> to return a direct image URL.
+          </p>
+          <p class="text-xs text-slate-500">Configured for your profiles:</p>
+          <ul class="list-disc list-inside text-xs text-slate-600">
+            <li>LinkedIn profile: <code>https://www.linkedin.com/in/thusithanjana-thilakarathna-18858677/</code></li>
+            <li>Google Scholar user: <code>RCGYhLsAAAAJ</code></li>
+          </ul>
+          <p>
+            Example Cloudflare Worker (minimal) for <code>/api/linkedin-avatar</code> that scrapes the Open Graph image from your LinkedIn profile (update selectors over time as sites change):
+          </p>
+          <pre class="bg-slate-900 text-slate-100 p-3 rounded-lg overflow-auto text-xs">export default {
+  async fetch(req) {
+    const url = new URL(req.url);
+    if (url.pathname === '/api/linkedin-avatar') {
+      const profile = url.searchParams.get('profile');
+      if (!profile) return new Response(JSON.stringify({ error: 'missing profile' }), { status: 400 });
+      const html = await (await fetch(profile, { headers: { 'User-Agent': 'Mozilla/5.0' } })).text();
+      const m = html.match(/<meta property="og:image" content="([^"]+)"/i);
+      const photo = m?.[1] || '';
+      return new Response(JSON.stringify({ photo }), { headers: { 'content-type': 'application/json' } });
+    }
+    if (url.pathname === '/api/scholar') {
+      const user = url.searchParams.get('user');
+      if (!user) return new Response(JSON.stringify({ error: 'missing user' }), { status: 400 });
+      // Fetch + parse Scholar HTML and emit JSON: metrics + publications
+      // Use a dedicated parser in production.
+      return new Response(JSON.stringify({ metrics: {}, publications: [] }), { headers: { 'content-type': 'application/json' } });
+    }
+    if (url.pathname === '/api/linkedin') {
+      // Return your curated LinkedIn data as JSON per the documented shape
+      return new Response(JSON.stringify({ profile: {}, about: '', highlights: [], experience: [], projects: [], contacts: [] }), { headers: { 'content-type': 'application/json' } });
+    }
+    return new Response('Not found', { status: 404 });
+  }
+}</pre>
+          <p>
+            During development, you can drop static JSON files named <code>linkedin.json</code> and <code>scholar.json</code> next to this HTML file to preview the UI without server code.
+          </p>
+        </div>
+      </details>
+    </div>
+  </footer>
+
+  <script>
+  'use strict';
+
+  // Run after DOM is fully parsed so all IDs exist
+  document.addEventListener('DOMContentLoaded', () => {
+    const YEAR_EL = document.getElementById('year');
+    if (YEAR_EL) YEAR_EL.textContent = new Date().getFullYear();
+
+    // Source profiles provided by user
+    const LINKS = {
+      linkedinProfile: 'https://www.linkedin.com/in/thusithanjana-thilakarathna-18858677/',
+      scholarUser: 'RCGYhLsAAAAJ'
+    };
+
+    // ---------- Utilities ----------
+    const $ = (sel) => document.querySelector(sel);
+    const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text) x.textContent = text; return x; };
+
+    async function fetchJSON(urls, fallback) {
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { credentials: 'omit' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          return data;
+        } catch (e) { /* try next */ }
+      }
+      return fallback;
+    }
+
+    // Defensive helper to avoid null errors when a node is missing
+    function withNode(selector, fn) {
+      const node = typeof selector === 'string' ? $(selector) : selector;
+      if (!node) return; // silently skip if not found
+      fn(node);
+    }
+
+    // ---------- Renderers ----------
+    function renderHeader(linked) {
+      if (!linked || !linked.profile) return;
+      const { profile } = linked;
+
+      withNode('#avatar', (avatar) => {
+        if (profile.photo) { avatar.classList.remove('skeleton'); avatar.src = profile.photo; }
+      });
+      withNode('#headline', (n) => { n.textContent = profile.headline || 'Profile'; });
+      withNode('#summary', (n) => { n.textContent = profile.summary || ''; });
+
+      withNode('#badges', (badges) => {
+        badges.innerHTML = '';
+        (profile.badges || []).forEach(b => {
+          const chip = el('span', 'px-2 py-1 rounded-full text-xs bg-slate-900 text-white');
+          chip.textContent = b;
+          badges.appendChild(chip);
+        });
+      });
+
+      withNode('#aboutContent', (aboutBox) => {
+        aboutBox.innerHTML = '';
+        const p = el('p', 'leading-relaxed text-slate-700');
+        p.textContent = linked.about || '';
+        aboutBox.appendChild(p);
+      });
+
+      withNode('#highlights', (hl) => {
+        hl.innerHTML = '';
+        (linked.highlights || []).forEach(h => {
+          const item = el('li', 'flex items-start gap-2');
+          item.innerHTML = `<span class="mt-1 inline-block w-2 h-2 rounded-full bg-slate-900"></span><span>${h}</span>`;
+          hl.appendChild(item);
+        });
+      });
+
+      withNode('#contactLinks', (wrap) => {
+        wrap.innerHTML = '';
+        (linked.contacts || []).forEach(c => {
+          const a = el('a', 'inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100');
+          a.href = c.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = c.label;
+          wrap.appendChild(a);
+        });
+      });
+    }
+
+    function renderExperience(items = []) {
+      withNode('#experienceList', (wrap) => {
+        wrap.innerHTML = '';
+        if (!items.length) { wrap.textContent = 'No experience found.'; return; }
+        items.forEach(exp => {
+          const card = el('article', 'p-5 rounded-2xl border border-slate-200 bg-white');
+          const title = el('h4', 'font-semibold');
+          title.textContent = `${exp.title || ''} · ${exp.company || ''}`.trim();
+          const meta = el('div', 'text-sm text-slate-500 mt-1');
+          const range = [exp.start, exp.end || 'Present'].filter(Boolean).join(' — ');
+          meta.textContent = [range, exp.location].filter(Boolean).join(' • ');
+          const desc = el('p', 'mt-2 text-slate-700');
+          desc.textContent = exp.description || '';
+          card.append(title, meta, desc);
+          wrap.appendChild(card);
+        });
+      });
+    }
+
+    function renderProjects(items = []) {
+      withNode('#projectList', (wrap) => {
+        wrap.innerHTML = '';
+        if (!items.length) { wrap.textContent = 'No projects found.'; return; }
+        items.forEach(p => {
+          const card = el('a', 'block p-5 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition');
+          if (p.url) { card.href = p.url; card.target = '_blank'; card.rel = 'noopener'; }
+          const title = el('h4', 'font-semibold'); title.textContent = p.name || 'Untitled project';
+          const desc = el('p', 'mt-1 text-slate-600 text-sm'); desc.textContent = p.description || '';
+          card.append(title, desc); wrap.appendChild(card);
+        });
+      });
+    }
+
+    function renderPublications(items = []) {
+      withNode('#pubList', (wrap) => {
+        wrap.innerHTML = '';
+        if (!items.length) { wrap.innerHTML = '<li>No publications found.</li>'; return; }
+        items.sort((a,b) => (b.year||0) - (a.year||0));
+        items.forEach(pub => {
+          const li = el('li', 'bg-white border border-slate-200 rounded-2xl p-4');
+          const title = el('div', 'font-medium'); title.textContent = pub.title || 'Untitled';
+          const meta = el('div', 'text-sm text-slate-500 mt-1');
+          meta.textContent = [pub.authors?.join(', '), pub.venue, pub.year].filter(Boolean).join(' • ');
+          if (pub.link) {
+            const a = el('a', 'inline-block mt-2 text-sm underline');
+            a.href = pub.link; a.textContent = 'View'; a.target = '_blank'; a.rel = 'noopener';
+            li.append(title, meta, a);
+          } else { li.append(title, meta); }
+          wrap.appendChild(li);
+        });
+      });
+    }
+
+    function renderMetrics(m = {}) {
+      withNode('#metricCards', (wrap) => {
+        wrap.innerHTML = '';
+        const entries = [
+          ['Citations (all)', m.citations_total],
+          ['Citations (5y)', m.citations_5y],
+          ['h-index', m.h_index],
+          ['h-index (5y)', m.h_index_5y],
+          ['i10-index', m.i10_index],
+          ['i10-index (5y)', m.i10_index_5y],
+        ];
+        entries.forEach(([label, val]) => {
+          const card = el('div', 'p-4 rounded-2xl border border-slate-200 bg-white');
+          const v = el('div', 'text-2xl font-semibold'); v.textContent = (val ?? '—');
+          const l = el('div', 'text-xs text-slate-500 mt-1'); l.textContent = label;
+          card.append(v, l); wrap.appendChild(card);
+        });
+      });
+    }
+
+    // ---------- Boot ----------
+    (async function boot() {
+      // 1) Try to fetch LinkedIn via same-origin endpoints or fallback JSON file
+      const linkedin = await fetchJSON([
+        '/api/linkedin', // your serverless proxy
+        './linkedin.json' // dev fallback
+      ], {
+        profile: {
+          name: 'Thusithanjana Thilakarathna',
+          headline: 'HCI & AR Researcher | Lecturer | Software Engineer',
+          summary: 'Designing personalized AR-HMD interfaces for paramedic training.',
+          photo: '',
+          location: 'Auckland, NZ',
+          badges: ['HCI', 'AR/VR', 'Unity', 'UX']
+        },
+        about: 'This is a demo fallback. Connect your /api/linkedin endpoint to show live profile data.',
+        highlights: ['PhD at AUT (HCI/AR)', 'Lecturer in Software Engineering', 'Unity + ML Agents', 'Publications in HCI'],
+        experience: [
+          { title: 'Lecturer', company: 'SLIIT University', start: '2019-05', end: '2025-01', location: 'Sri Lanka', description: 'Teaching programming and software engineering modules.' },
+          { title: 'PhD Researcher', company: 'AUT', start: '2025-02', end: null, location: 'Auckland, NZ', description: 'AR-HMD personalization for paramedic training.' }
+        ],
+        projects: [
+          { name: 'Simulated Users in AR Training', description: 'Exploring UI trade-offs without human trials.', url: '#' },
+          { name: 'LLM Cue Interpreter in XR', description: 'Gemini-based cue analysis for training realism.', url: '#' }
+        ],
+        contacts: [
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/in/thusithanjana-thilakarathna-18858677/' },
+          { label: 'Google Scholar', url: `https://scholar.google.com/citations?user=RCGYhLsAAAAJ&hl=en` },
+          { label: 'Email', url: 'mailto:you@example.com' }
+        ]
+      });
+
+      // Attempt to fetch avatar from a same-origin proxy that resolves LinkedIn profile image
+      try {
+        const av = await fetch(`/api/linkedin-avatar?profile=${encodeURIComponent('https://www.linkedin.com/in/thusithanjana-thilakarathna-18858677/')}`);
+        if (av.ok) {
+          const { photo } = await av.json();
+          if (photo) {
+            withNode('#avatar', (avatarEl) => { avatarEl.classList.remove('skeleton'); avatarEl.src = photo; });
+          }
+        }
+      } catch(_) { /* ignore; fall back to /api/linkedin data if provided */ }
+
+      renderHeader(linkedin);
+      renderExperience(linkedin.experience);
+      renderProjects(linkedin.projects);
+
+      // 2) Try to fetch Google Scholar via same-origin endpoint or fallback file
+      const scholar = await fetchJSON([
+        `/api/scholar?user=${encodeURIComponent('RCGYhLsAAAAJ')}`,
+        './scholar.json'
+      ], {
+        metrics: { citations_total: 0, citations_5y: 0, h_index: 0, h_index_5y: 0, i10_index: 0, i10_index_5y: 0 },
+        publications: []
+      });
+
+      renderPublications(scholar.publications);
+      renderMetrics(scholar.metrics || {});
+    })();
+
+    // --------------- Self-tests (dev) ---------------
+    (function runSelfTests() {
+      const results = [];
+      function test(name, fn) {
+        try { fn(); results.push(['PASS', name]); }
+        catch (e) { console.error(e); results.push(['FAIL', name + ' -> ' + e.message]); }
+      }
+
+      // Test 1: Ensure no crash when elements are missing (simulate by querying a missing node)
+      test('renderers tolerate missing nodes', () => {
+        renderHeader({ profile: { headline: 'h', summary: 's', badges: [] }, about: '', highlights: [], contacts: [] });
+        renderExperience([]);
+        renderProjects([]);
+        renderPublications([]);
+        renderMetrics({});
+      });
+
+      // Test 2: withNode skips when selector does not match
+      test('withNode safely skips null', () => {
+        withNode('#does-not-exist', (n) => { n.innerHTML = 'boom'; });
+      });
+
+      // Report
+      console.table(results.map(([status, name]) => ({ status, name })));
+    })();
+
+  });
+  </script>
+</body>
+</html>
